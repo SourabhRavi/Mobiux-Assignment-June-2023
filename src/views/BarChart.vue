@@ -69,6 +69,11 @@ const chartData = {
             label: Object.values(monthlySkuRevenue.value.January)[3].sku,
             backgroundColor: 'green',
             data: [Object.values(monthlySkuRevenue.value.January)[3].totalPrice, Object.values(monthlySkuRevenue.value.February)[3].totalPrice, Object.values(monthlySkuRevenue.value.March)[3].totalPrice]
+        },
+        {
+            label: Object.values(monthlySkuRevenue.value.January)[4].sku,
+            backgroundColor: 'purple',
+            data: [Object.values(monthlySkuRevenue.value.January)[4].totalPrice, Object.values(monthlySkuRevenue.value.February)[4].totalPrice, Object.values(monthlySkuRevenue.value.March)[4].totalPrice]
         }
     ]
 }
