@@ -2,6 +2,31 @@
     <div class="scroll-wrap">
         <div class="bg-white backdrop-blur bg-opacity-90 p-5 rounded-xl lg:w-full w-max">
             <div class="section-heading capitalize 2xl:text-2xl text-xl font-bold text-cyan-950 2xl:mb-5 mb-3">Month wise sales</div>
+            <div class="mb-8">
+                <div class="header-table mb-3">
+                    <div class="font-semibold capitalize 2xl:text-lg text-sm">Items</div>
+                    <div class="font-semibold capitalize 2xl:text-lg text-sm">Total revenue</div>
+                    <div class="font-semibold capitalize 2xl:text-lg text-sm">Contribution to revenue</div>
+                    <div class="font-semibold capitalize 2xl:text-lg text-sm">Cumulative Sum</div>
+                </div>
+                <!-- <template v-for="(month, index) in months">
+                    <div v-if="index < 3" @click="() => { selectedMonth = index + 1 }" :key="month" class="p-4 text-white border-black border-2 border-opacity-5 rounded-lg mb-3 hover:bg-[#916f95] transition hover:bg-opacity-50 body-table cursor-pointer" :class="selectedMonth === index + 1 ? 'bg-[#916f95] bg-opacity-100 hover:bg-opacity-90' : 'bg-cyan-600 bg-opacity-60'">
+                        <div class="font-semibold 2xl:text-lg text-sm capitalize">{{ itemsGeneratingMostRevenuePerMonth[(index + 1).toString()] ?? '-' }}</div>
+                        <div class="font-semibold capitalize 2xl:text-lg text-sm">INR {{ getTotalRevenue(itemsGeneratingMostRevenuePerMonth[index + 1]).toLocaleString() }}</div>
+                        <div class="font-semibold capitalize 2xl:text-lg text-sm">{{ getRevenueContribution(itemsGeneratingMostRevenuePerMonth[index + 1]).toFixed(0) }}%</div>
+                        <div class="font-semibold capitalize 2xl:text-lg text-sm">{{ (getRevenueContribution(itemsGeneratingMostRevenuePerMonth[index]) + getRevenueContribution(itemsGeneratingMostRevenuePerMonth[index + 1])).toFixed(0) }}%</div>
+                    </div>
+                </template> -->
+                <!-- <template v-for="(month, index) in getRevenueOfAll" :key="index">
+                    <div @click="() => { selectedMonth = index + 1 }" class="p-4 text-white border-black border-2 border-opacity-5 rounded-lg mb-3 hover:bg-[#916f95] transition hover:bg-opacity-50 body-table cursor-pointer" :class="selectedMonth === index + 1 ? 'bg-[#916f95] bg-opacity-100 hover:bg-opacity-90' : 'bg-cyan-600 bg-opacity-60'">
+                        <div class="font-semibold 2xl:text-lg text-sm capitalize">{{ itemsGeneratingMostRevenuePerMonth[(index + 1).toString()] ?? '-' }}</div>
+                        <div class="font-semibold capitalize 2xl:text-lg text-sm">INR {{ getTotalRevenue(itemsGeneratingMostRevenuePerMonth[index + 1]).toLocaleString() }}</div>
+                        <div class="font-semibold capitalize 2xl:text-lg text-sm">{{ getRevenueContribution(itemsGeneratingMostRevenuePerMonth[index + 1]).toFixed(0) }}%</div>
+                        <div class="font-semibold capitalize 2xl:text-lg text-sm">{{ (getRevenueContribution(itemsGeneratingMostRevenuePerMonth[index]) + getRevenueContribution(itemsGeneratingMostRevenuePerMonth[index + 1])).toFixed(0) }}%</div>
+                    </div>
+                </template> -->
+
+            </div>
             <div class="flex flex-col gap-3">
                 <div class="header-table">
                     <div class="font-semibold capitalize 2xl:text-lg text-sm">Month</div>
@@ -32,11 +57,11 @@
                 return curr.quantity < acc.quantity ? curr : acc;
             }).quantity : 'No data' }}</p>
 
-            <p class="number font-bold text-xl text-cyan-950">Max Order(s): {{ mostPopularSKU.length > 0 ? mostPopularSKU.reduce((acc, curr) => {
-                return curr.quantity > acc.quantity ? curr : acc;
-            }).quantity : 'No data' }}</p>
+                    <p class="number font-bold text-xl text-cyan-950">Max Order(s): {{ mostPopularSKU.length > 0 ? mostPopularSKU.reduce((acc, curr) => {
+                        return curr.quantity > acc.quantity ? curr : acc;
+                    }).quantity : 'No data' }}</p>
 
-            <p class="number font-bold text-xl text-cyan-950">Avg Order(s): {{ mostPopularSKU.length > 0 ? ((mostPopularSKU).reduce((acc, curr) => { return acc + Number(curr.quantity) }, 0) / (salesData.filter((data) => Number(moment(data.date.toString(), 'YYYY-MM-DD').format("MM")) === selectedMonth && data.sku === mostPopularItemPerMonth[selectedMonth]?.sku)).length).toFixed(2) : 'No data' }}</p>
+                    <p class="number font-bold text-xl text-cyan-950">Avg Order(s): {{ mostPopularSKU.length > 0 ? ((mostPopularSKU).reduce((acc, curr) => { return acc + Number(curr.quantity) }, 0) / (salesData.filter((data) => Number(moment(data.date.toString(), 'YYYY-MM-DD').format("MM")) === selectedMonth && data.sku === mostPopularItemPerMonth[selectedMonth]?.sku)).length).toFixed(2) : 'No data' }}</p>
         </div>
     </div>
 </template>
@@ -90,9 +115,42 @@ const itemsGeneratingMostRevenuePerMonth = computed(() => {
     return items;
 });
 
+// console.log(itemsGeneratingMostRevenuePerMonth.value);
+
 const mostPopularSKU = computed(() => {
     return salesData.filter((data) => Number(moment(data.date.toString(), 'YYYY-MM-DD').format("MM")) === selectedMonth.value).filter((data) => data.sku === mostPopularItemPerMonth.value[selectedMonth.value]?.sku)
 })
+
+const getRevenueContribution = (value: string) => {
+    return ((getTotalRevenue(value)) / totalSales.value) * 100;
+}
+
+const getTotalRevenue = (value: string) => {
+    return data.value.filter((data) => data.sku === value).reduce((acc, curr) => {
+        return Number(acc) + Number(curr.totalPrice);
+    }, 0);
+}
+
+// const sortedContributionToRevenue = computed(() => {
+//     return getRevenueContribution(itemsGeneratingMostRevenuePerMonth[index + 1]).toFixed(0)
+// })
+
+// const getRevenueOfAll = computed(() => {
+//     const allItems: { [sku: string]: { sku: string; quantity: number } } = {};
+
+//     salesData.forEach((sale, index) => {
+//         const month = Number(moment(sale.date.toString()).format("MM"));
+//         const { month, totalPrice } = sale;
+        
+//         if (!allItems[month]) {
+//             allItems[month] = { month: sku, quantity: getRevenueContribution(totalPrice) };
+//         }
+//     });
+
+//     return [allItems];
+// });
+
+// console.log(getRevenueOfAll.value.sort());
 
 </script>
   
@@ -108,6 +166,5 @@ const mostPopularSKU = computed(() => {
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 20px
 }
-
 </style>
   
