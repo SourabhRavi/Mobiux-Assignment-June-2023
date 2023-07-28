@@ -11,28 +11,25 @@ import moment from 'moment';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
-const getTotalRevenue = computed(() => {
-    const items: { [sku: string]: { sku: string, totalPrice: number, date: string } } = {};
+// const getTotalRevenue = computed(() => {
+//     const items: { [sku: string]: { sku: string, totalPrice: number, date: string } } = {};
 
-    salesData.forEach((sale) => {
-        const sku = sale.sku;
-        const totalPrice = sale.totalPrice
-        const date = sale.date;
+//     salesData.forEach((sale) => {
+//         const sku = sale.sku;
+//         const totalPrice = sale.totalPrice
+//         const date = sale.date;
 
-        if (!items[sku]) {
-            items[sku] = { sku: sku, totalPrice: Number(totalPrice), date: date }
-        } else {
-            items[sku] = { sku: sku, totalPrice: Number(totalPrice) + Number(sale.totalPrice), date: date }
-        }
-    })
+//         if (!items[sku]) {
+//             items[sku] = { sku: sku, totalPrice: Number(totalPrice), date: date }
+//         } else {
+//             items[sku] = { sku: sku, totalPrice: Number(totalPrice) + Number(sale.totalPrice), date: date }
+//         }
+//     })
 
-    return items;
-})
+//     return items;
+// })
 
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-const sortedItems = Object.values(getTotalRevenue.value).sort((a, b) => Number(b.totalPrice) - Number(a.totalPrice))
-
 
 const monthlySkuRevenue = computed(() => {
     const items: { [month: string]: { [sku: string]: { sku: string, totalPrice: number, month: string } } } = {};
